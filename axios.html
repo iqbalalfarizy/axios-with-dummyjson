@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API using axios</title>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+</head>
+<body>
+    <img src="D:/Prodemy/Javascript/images.jpeg" alt="panda"><br><br>
+
+    <input type="text" id="username" placeholder="username" ><br><br>
+    <input type="password" id="password" placeholder="password" ><br><br>
+
+    <button onclick="login()">login</button>
+    <span id="span"></span><br><br>
+    <button onclick="getUser()"> get user data</button><br><br>
+    <span id="span2"></span><br><br>
+    <span id="span3"></span>
+
+        
+    <script>
+        
+        const myInstance = axios.create({
+            baseURL : 'https://dummyjson.com',
+            
+            data :{
+                firstName : "iqbal al"
+            },
+            // headers:{
+            //     Authorization : `Bearer ${token}`
+            // }
+        })       
+
+        // Post
+        async function login(){
+
+            const credential = {
+                username: `${document.getElementById('username').value}`,
+                password: `${document.getElementById('password').value}`
+            }
+            try{
+                await myInstance.post("/auth/login", credential)
+                    .then((response)=>{
+                        const token = response.data.token
+                        myInstance.defaults.headers.Authorization = `Bearer ${token}`
+                        document.getElementById('span').innerHTML="Login berhasil!!!"
+                    }) 
+            }catch(err){
+                document.getElementById('span').innerHTML="Login gagal!!!"
+            }
+
+            // console.log(myInstance.defaults.headers.Authorization)
+
+            // myInstance
+            //     .get("/user/me")
+            //     .then((response)=>{
+            //         console.log("ini responnya2", response.data)
+            //     })
+            //     .catch((err)=>{
+            //         console.log("ini errornya2", err)
+            //     })
+        
+        }                        
+       
+        // Get
+        function getUser(){
+            myInstance
+                .get("/user/me")
+                .then((response)=>{
+                    document.getElementById('span2').innerHTML=`Nama anda ${response.data.firstName} `
+                    document.getElementById('span3').innerHTML=`Umur anda ${response.data.age} `
+                })
+                .catch((err)=>{
+                    console.log(err)
+                })
+        }
+        
+        //Put
+        myInstance
+                .put("/users/2", {
+                firstName : "Iqbal"
+                })
+                .then((response)=>{
+                    console.log(response.data)
+                })
+                .catch((err)=>{
+                    console.log(err)
+                })
+                
+
+        //Delete
+        myInstance
+                .delete("/users/2")
+                .then((response)=>{
+                    console.log(response.data)
+                })
+                .catch((err)=>{
+                    console.log(err)
+                })
+
+        
+        
+        
+
+        
+        
+    </script>
+
+  
+</body>
+</html>
